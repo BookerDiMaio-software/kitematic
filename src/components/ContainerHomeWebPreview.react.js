@@ -1,13 +1,9 @@
 import React from 'react/addons';
-import metrics from '../utils/MetricsUtil';
-import {shell} from 'electron';
+import 'electron';
 
 var ContainerHomeWebPreview = React.createClass({
   handleClickPreview: function () {
-    metrics.track('Opened In Browser', {
-      from: 'preview'
-    });
-    shell.openExternal('http://' + this.props.ports[this.props.defaultPort].url);
+      window.open('http://' + this.props.ports[this.props.defaultPort].url);
   },
 
   handleClickPortSettings: function () {

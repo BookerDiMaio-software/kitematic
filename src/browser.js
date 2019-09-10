@@ -33,7 +33,10 @@ app.on('ready', function () {
     resizable: true,
     frame: false,
     backgroundColor: '#fff',
-    show: false
+    show: false,
+    webPreferences: {
+      nativeWindowOpen: true
+    }
   });
 
   if (process.env.NODE_ENV === 'development') {
@@ -71,8 +74,17 @@ app.on('ready', function () {
     });
   }
 
-  mainWindow.webContents.on('new-window', function (e) {
-    e.preventDefault();
+  mainWindow.webContents.on('new-window', (event, url, frameName, disposition, options) => {
+    event.preventDefault();
+    const win = new BrowserWindow({
+      webContents: options.webContents, // use existing webContents if provided
+      show: false
+    });
+    win.once('ready-to-show', () => win.show());
+    if (!options.webContents) {
+      win.loadURL(url); // existing webContents will be navigated automatically
+    }
+    event.newGuest = win;
   });
 
   mainWindow.webContents.on('will-navigate', function (e, url) {
